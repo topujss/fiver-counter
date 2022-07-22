@@ -1,47 +1,54 @@
-//Get getElements from html
-const countForm = document.getElementById('count-form');
-const msg = document.querySelector('.msg');
-const show = document.querySelector('.card-footer');
+// get elements from html
+const count_form = document.getElementById('count-form');
+const alarm_btn = document.getElementById('alarm-btn');
+const percent = document.getElementById('perc');
+const show = document.querySelector('.card-footer h4');
+const audio = document.querySelector('audio');
+const progress = document.querySelector('.progress-bar');
 
-// submit form
-countForm.onsubmit = (e) => {
+let count;
+// while submitting form
+count_form.onsubmit = (e) => {
   e.preventDefault();
 
-  // get form data as a object
+  clearInterval(count);
+
+  // get value and destructuring them by {date, time}
   const { date, time } = Object.fromEntries(new FormData(e.target).entries());
 
-  // validation
-  if (!date || !time) {
-    msg.innerHTML = alertFunction('Select date and time');
-  }
+  let start_time = Date.now();
+  let end_time = new Date(date + ' ' + time);
 
-  // nonstop timer
-  let count = setInterval(() => {
-    // get timestamps
-    let start_time = Date.now();
+  count = setInterval(() => {
+    futureCounter(date, time, show, count, audio);
+    let perc = perCounter(start_time, end_time);
 
-    // gives time depending on future
-    let end_time = new Date(date + ' ' + time);
-    let future_time = Math.floor(Math.abs(end_time.getTime() - start_time));
-
-    // get value from time
-    let total_sec = Math.floor(future_time / 1000);
-    let total_min = Math.floor(total_sec / 60);
-    let total_hour = Math.floor(total_min / 60);
-    let total_day = Math.floor(total_hour / 24);
-    let total_week = Math.ceil(total_day / 7);
-
-    // time sorter
-    let hour = total_hour - total_day * 24;
-    // min value = total_min - (total_day * day * min) - (hour * min)
-    let min = total_min - total_day * 24 * 60 - hour * 60;
-    // sec value = total_sec - (total_day * day * min * sec) - (hour * min * sec) - (min * sec)
-    let sec = total_sec - total_day * 24 * 60 * 60 - hour * 60 * 60 - min * 60;
-
-    if (total_sec <= 0) {
-      clearInterval(count);
+    if (perc > 0 && perc <= 35) {
+      progress.style.backgroundColor = 'red';
+    } else if (perc > 35 && perc <= 65) {
+      progress.style.backgroundColor = 'yellow';
+    } else if (perc > 65 && perc <= 100) {
+      progress.style.backgroundColor = 'green';
     }
+    // switch (progress) {
+    //   case perc > 0 && perc <= 35:
+    //     progress.style.backgroundColor = 'red';
+    //     break;
+    //   case perc > 35 && perc <= 65:
+    //     progress.style.backgroundColor = 'yellow';
+    //     break;
+    //   case perc > 65 && perc <= 100:
+    //     progress.style.backgroundColor = 'green';
+    //     break;
+    // }
 
-    show.innerHTML = `<h4 class="text-center fs-4">${total_day} day : ${hour} hour : ${min} min : ${sec} sec</h4>`;
+    perc && progress.classList.replace('d-none', 'd-block');
+    progress.style.width = `${perc}%`;
+    progress.innerHTML = `${perc}%`; // `${100 - perc}%` - for reverse
   }, 1000);
+};
+
+alarm_btn.onclick = (e) => {
+  e.preventDefault();
+  audio.pause();
 };
