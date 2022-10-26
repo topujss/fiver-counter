@@ -23,25 +23,26 @@ count_form.onsubmit = (e) => {
     futureCounter(date, time, show, count, audio);
     let perc = perCounter(start_time, end_time);
 
-    if (perc > 0 && perc <= 35) {
-      progress.style.backgroundColor = 'red';
-    } else if (perc > 35 && perc <= 65) {
-      progress.style.backgroundColor = 'yellow';
-    } else if (perc > 65 && perc <= 100) {
-      progress.style.backgroundColor = 'green';
-    }
-    // switch (progress) {
-    //   case perc > 0 && perc <= 35:
-    //     progress.style.backgroundColor = 'red';
-    //     break;
-    //   case perc > 35 && perc <= 65:
-    //     progress.style.backgroundColor = 'yellow';
-    //     break;
-    //   case perc > 65 && perc <= 100:
-    //     progress.style.backgroundColor = 'green';
-    //     break;
+    // if (perc > 0 && perc <= 35) {
+    //  progress.style.backgroundColor = 'red';
+    // } else if (perc > 35 && perc <= 65) {
+    //  progress.style.backgroundColor = 'yellow';
+    // } else if (perc > 65 && perc <= 100) {
+    //  progress.style.backgroundColor = 'green';
     // }
+     switch (progress) {
+      case perc > 0 && perc <= 35:
+        progress.style.backgroundColor = 'red';
+          break;
+      case perc > 35 && perc <= 65:
+        progress.style.backgroundColor = 'yellow';
+          break;
+      case perc > 65 && perc <= 100:
+        progress.style.backgroundColor = 'green';
+          break;
+     }
 
+    // replacing the class from d-none to d-block
     perc && progress.classList.replace('d-none', 'd-block');
     progress.style.width = `${perc}%`;
     progress.innerHTML = `${perc}%`; // `${100 - perc}%` - for reverse
